@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: nestjs_server
+    restart: always
+    ports:
+      - "10050:10050"
+    environment:
+      - NODE_ENV=production
+      - PORT=10050
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_database:5432/mydb?schema=public
+    depends_on:
+      - db
+    networks:
+      - localserver
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: nextjs_client
+    restart: always
+    ports:
+      - "3003:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://server:10050
+    depends_on:
+      - server
+    networks:
+      - localserver
+
+  db:
+    image: postgres:15
+    container_name: postgres_dbs
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    networks:
+      - localserver
+
+volumes:
+  postgres_data_local:
+
+networks:
+  localserver:
+    driver: bridge
