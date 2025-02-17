@@ -4,7 +4,7 @@ import { Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common'
 @Injectable()
 export class ProducerService implements OnModuleInit, OnApplicationShutdown {
   private readonly kafka = new Kafka({
-    brokers: ["localhost:9092"]
+    brokers: ["kafka_container:9093"],
   });
 
   private readonly producer: Producer = this.kafka.producer();

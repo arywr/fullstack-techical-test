@@ -17,4 +17,4 @@ RUN npx prisma generate
 RUN npm run build
 
 # Jalankan aplikasi NestJS
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:prod"]

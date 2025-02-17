@@ -76,18 +76,21 @@ const BATCH_SIZE = 10_000;
 const TOTAL_RECORDS = 50_000;
 
 const main = async () => {
-  for (let i = 0; i < TOTAL_RECORDS / BATCH_SIZE; i++) {
-    const dataBatch = Array.from({ length: BATCH_SIZE }, () => fakerCitizen());
-
-    console.time(`Batch ${i + 1}`);
-
-    await prisma.citizens.createMany({
-      data: dataBatch,
-      skipDuplicates: true,
-    });
-
-    console.timeEnd(`Batch ${i + 1}`);
-    console.log(`Inserted batch ${i + 1} of ${TOTAL_RECORDS / BATCH_SIZE}`);
+  const count = await prisma.citizens.count();
+  if (count === 0) {
+    for (let i = 0; i < TOTAL_RECORDS / BATCH_SIZE; i++) {
+      const dataBatch = Array.from({ length: BATCH_SIZE }, () => fakerCitizen());
+  
+      console.time(`Batch ${i + 1}`);
+  
+      await prisma.citizens.createMany({
+        data: dataBatch,
+        skipDuplicates: true,
+      });
+  
+      console.timeEnd(`Batch ${i + 1}`);
+      console.log(`Inserted batch ${i + 1} of ${TOTAL_RECORDS / BATCH_SIZE}`);
+    }
   }
 };
 

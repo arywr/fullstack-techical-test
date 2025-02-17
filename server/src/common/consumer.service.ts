@@ -4,7 +4,7 @@ import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 @Injectable()
 export class ConsumerService implements OnApplicationShutdown {
   private readonly kafka = new Kafka({
-    brokers: ["localhost:9092"],
+    brokers: ["kafka_container:9093"],
   });
 
   private readonly consumers: Consumer[] = [];
