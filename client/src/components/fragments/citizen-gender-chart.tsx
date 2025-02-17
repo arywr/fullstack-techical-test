@@ -17,7 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useEffect, useState } from "react"
+import { useGetStatisticByGenderQuery } from "@/service"
 
 const chartConfig = {
   total_men: {
@@ -31,17 +31,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function CitizenGenderChart() {
-  const [data, setData] = useState([]);
-
-  const fetchData = async () => {
-    const res = await fetch('http://localhost:3005/api/citizens/genders')
-    const data = await res.json();
-    setData(data?.data)
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data } = useGetStatisticByGenderQuery({});
 
   return (
     <Card className="h-full">
@@ -51,7 +41,7 @@ export function CitizenGenderChart() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={data}>
+          <BarChart accessibilityLayer data={data?.data}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="province"

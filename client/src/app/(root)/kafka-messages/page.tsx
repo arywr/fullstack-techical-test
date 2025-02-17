@@ -2,6 +2,7 @@
 
 import { Consumer } from "@/components/fragments/consumer";
 import { Producer } from "@/components/fragments/producer";
+import { useGetMessagesQuery } from "@/service/message";
 import { useEffect, useState } from "react";
 
 type Message = {
@@ -15,24 +16,18 @@ type MessageResponse = {
 
 const KafkaMessagePage = () => {
   const [message, setMessage] = useState<string[]>([]);
-  
-  const fetchMessage = async () => {
+
+  const { data } = useGetMessagesQuery(null, { pollingInterval: 1000 });
+
+  useEffect(() => {
     const messages = [];
-    const res = await fetch('http://localhost:3005/api/messages')
-    const data: MessageResponse = await res.json()
     for (let index = 0; index < data?.data?.length; index++) {
       const element = data?.data[index];
       messages.push(element?.text);
     }
 
     setMessage(messages);
-  }
-
-  useEffect(() => {
-    fetchMessage();
-    const interval = setInterval(fetchMessage, 1000); // Fetch every 1 second
-    return () => clearInterval(interval);
-  }, []);
+  }, [data]);
 
   return (
     <div className="grid grid-cols-2 gap-16">

@@ -15,7 +15,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useEffect, useState } from "react"
+import { useGetStatisticByEducationQuery } from "@/service"
 
 const chartConfig = {
   jumlah: {
@@ -25,17 +25,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function CitizenEducationChart() {
-   const [data, setData] = useState([]);
-  
-  const fetchData = async () => {
-    const res = await fetch('http://localhost:3005/api/citizens/educations')
-    const data = await res.json();
-    setData(data?.data);
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+   const { data } = useGetStatisticByEducationQuery({})
   
   return (
     <Card className="h-full">
@@ -47,7 +37,7 @@ export function CitizenEducationChart() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={data}
+            data={data?.data}
             layout="vertical"
             margin={{
               left: -20,

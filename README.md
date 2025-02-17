@@ -39,3 +39,8 @@ $ docker compose up -d --build
 # Run to stop the app
 $ docker compose down
 ```
+
+## Results
+
+![Indonesian Statistic 2024](statistics.png)
+![Simple Pub Sub](kafka.png)

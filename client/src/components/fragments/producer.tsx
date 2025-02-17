@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
+import { useSendMessageMutation } from "@/service/message";
 
 type ProducerForm = {
   message: string
@@ -12,6 +13,8 @@ type ProducerForm = {
 export function Producer() {
   const [message, setMessage] = useState<string[]>([]);
 
+  const [sendMessage] = useSendMessageMutation();
+
   const form = useForm<ProducerForm>({
     defaultValues: {
       message: "value"
@@ -19,31 +22,15 @@ export function Producer() {
   });
 
   const onSubmit = async (data: ProducerForm) => {
-    const url = "http://localhost:3005/api/messages/send";
-
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({ value: data.message, key: "key" }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-  
+      await sendMessage({ value: data.message, key: "key" }).unwrap();
+      form.reset();
       const temp = message;
       temp.push(data.message);
-      
-      form.reset();
       setMessage(temp);
     } catch (error: any) {
-      console.error(error);
+      console.error(error)
     }
-
   }
 
   return (
